@@ -2,6 +2,7 @@
 #include <string>
 
 struct Record {
+    std::string service;
     std::string title;
     std::string login;
     std::string password;

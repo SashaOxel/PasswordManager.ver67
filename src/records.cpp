@@ -28,6 +28,7 @@ static void saveRecords() {
     stringstream ss;
     ss << VAULT_HEADER << "\n";
     for (const auto& rec : records) {
+        ss << rec.service  << "\n";
         ss << rec.title    << "\n";
         ss << rec.login    << "\n";
         ss << rec.password << "\n";
@@ -58,8 +59,9 @@ static bool loadRecords() {
     }
 
     Record rec;
-    while (getline(ss, rec.title)) {
-        if (rec.title.empty()) continue;
+    while (getline(ss, rec.service)) {
+        if (rec.service.empty()) continue;
+        if (!getline(ss, rec.title))    break;
         if (!getline(ss, rec.login))    break;
         if (!getline(ss, rec.password)) break;
         if (!getline(ss, rec.url))      break;
@@ -96,7 +98,9 @@ void showAllRecords() {
     }
     cout << "\n=== Список записей ===" << endl;
     for (size_t i = 0; i < records.size(); i++) {
-        cout << "[" << i + 1 << "] " << records[i].title << endl;
+        cout << "[" << i + 1 << "] " << records[i].service;
+        if (!records[i].title.empty()) cout << " (" << records[i].title << ")";
+        cout << endl;
         cout << "    Логин: "   << records[i].login    << endl;
         cout << "    Пароль: "  << records[i].password << endl;
         cout << "    URL: "     << records[i].url      << endl;
@@ -110,11 +114,30 @@ void addRecord() {
     Record rec;
     cout << "\n=== Добавление записи ===" << endl;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cout << "Сервис (обязательно): ";
+    getline(cin, rec.service);
+    while (rec.service.empty()) {
+        cout << "Поле не может быть пустым. Сервис: ";
+        getline(cin, rec.service);
+    }
+
     cout << "Название: ";    getline(cin, rec.title);
     cout << "Логин: ";       getline(cin, rec.login);
     cout << "Пароль: ";      getline(cin, rec.password);
     cout << "URL: ";         getline(cin, rec.url);
     cout << "Заметка: ";     getline(cin, rec.note);
+
+    for (size_t i = 0; i < records.size(); i++) {
+        if (records[i].service == rec.service && records[i].login == rec.login) {
+            cout << "Найдена запись с таким же сервисом и логином. Перезаписываем..." << endl;
+            records[i] = rec;
+            saveRecords();
+            cout << "Запись обновлена!" << endl;
+            return;
+        }
+    }
+
     records.push_back(rec);
     saveRecords();
     cout << "Запись добавлена!" << endl;
@@ -137,6 +160,14 @@ void editRecord() {
     cout << "\n=== Редактирование (Enter — оставить текущее) ===" << endl;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string tmp;
+
+    cout << "Сервис [" << rec.service << "]: ";
+    getline(cin, tmp);
+    if (!tmp.empty()) rec.service = tmp;
+    while (rec.service.empty()) {
+        cout << "Поле не может быть пустым. Сервис: ";
+        getline(cin, rec.service);
+    }
 
     cout << "Название [" << rec.title << "]: ";
     getline(cin, tmp); if (!tmp.empty()) rec.title = tmp;
@@ -170,7 +201,7 @@ void deleteRecord() {
         cout << "Неверный номер." << endl;
         return;
     }
-    cout << "Удалить \"" << records[index].title << "\"? (1/0): ";
+    cout << "Удалить \"" << records[index].service << "\"? (1/0): ";
     if (readInt() == 1) {
         records.erase(records.begin() + index);
         saveRecords();

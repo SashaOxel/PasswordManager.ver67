@@ -2,6 +2,7 @@
 #include "../include/records.h"
 #include "../include/generator.h"
 #include "../include/crypto.h"
+#include "../tests/tests.h"
 #include <iostream>
 #include <string>
 #include <limits>
@@ -213,6 +214,7 @@ static void workMenu() {
         cout << "1. Записи" << endl;
         cout << "2. Генерация пароля" << endl;
         cout << "3. Шифрование файлов" << endl;
+        cout << "4. Запуск автотестов" << endl;
         cout << "0. Выйти из хранилища" << endl;
         cout << "> ";
         choice = readInt();
@@ -221,6 +223,7 @@ static void workMenu() {
             case 1: recordsMenu(); break;
             case 2: generatorMenu(); break;
             case 3: encryptionMenu(); break;
+            case 4: runTests(); break;
             case 0: break;
             default: cout << "Неверный выбор." << endl;
         }

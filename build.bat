@@ -9,6 +9,7 @@ g++ -std=c++17 -O2 -Wall ^
     src/generator.cpp ^
     src/menu.cpp ^
     src/records.cpp ^
+    tests/tests.cpp ^
     -I include ^
     -o PasswordManager.exe
 
@@ -17,5 +18,5 @@ if %ERRORLEVEL% EQU 0 (
     echo Сборка успешна! Запустите: PasswordManager.exe
 ) else (
     echo.
-    echo Ошибка сборки. Убедитесь, что g++ установлен и доступен в PATH.
+    echo Ошибка сборки.
 )

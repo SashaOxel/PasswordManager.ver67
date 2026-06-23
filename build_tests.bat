@@ -5,6 +5,7 @@ echo Сборка тестов...
 
 g++ -std=c++17 -O2 -Wall ^
     tests/test_main.cpp ^
+    tests/tests.cpp ^
     src/crypto.cpp ^
     src/generator.cpp ^
     -I include ^
